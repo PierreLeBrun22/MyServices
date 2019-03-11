@@ -23,7 +23,7 @@ matrix:
             - libstdc++6
             - fonts-droid
       before_script:
-        - git clone https://github.com/flutter/flutter.git -b alpha --depth 1
+        - git clone https://github.com/flutter/flutter.git
       script:
         - ./flutter/bin/flutter test
 
@@ -32,9 +32,9 @@ matrix:
       os: linux
       language: android
       licenses:
-        - 'android-sdk-preview-license-.+'
-        - 'android-sdk-license-.+'
-        - 'google-gdk-license-.+'
+        - yes | 'android-sdk-preview-license-.+'
+        - yes | 'android-sdk-license-.+'
+        - yes | 'google-gdk-license-.+'
       android:
         components:
           - tools
