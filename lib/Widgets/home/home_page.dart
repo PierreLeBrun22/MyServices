@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'home_page_body.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
 
   _signOut() async {
     try {
@@ -78,8 +79,14 @@ class _HomePageState extends State<HomePage> {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return new Scaffold(
-      body: new Column(
-        children: <Widget>[
+      appBar: new AppBar(
+        actions: <Widget>[
+            new FlatButton(
+                child: new Text('Logout',
+                    style: new TextStyle(fontSize: 17.0, color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold)),
+                onPressed: _signOut)
+          ],
+        flexibleSpace: 
           new Container(
             padding: new EdgeInsets.only(top: statusBarHeight),
             height: statusBarHeight + 66.0,
@@ -102,12 +109,109 @@ class _HomePageState extends State<HomePage> {
                   tileMode: TileMode.clamp),
             ),
           ),
-          new Container(
-            child: new FlatButton(
-                child: new Text('Logout',
-                    style: new TextStyle(fontSize: 17.0, color: Colors.white)),
-                onPressed: _signOut),
+      ),
+     drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the Drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: new Column(
+                children: <Widget>[
+                   new Container(
+            child: Center(
+              child: new Icon(
+                FontAwesomeIcons.handshake,
+                color: Colors.white,
+                size: 60.0,
+              ),
+            ),
           ),
+                   new Center(
+              child: new Text(
+                'Menu',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Satisfy',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 36.0),
+              ),
+            ),
+                ],
+              ),
+              decoration: new BoxDecoration(
+              gradient: new LinearGradient(
+                  colors: [const Color(0xFFff1b0a), const Color(0xFFff968e)],
+                  begin: const FractionalOffset(0.0, 0.0),
+                  end: const FractionalOffset(1.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
+            ),
+            ),
+            ListTile(
+              leading: new Icon(
+                FontAwesomeIcons.userAlt,
+                color: Colors.redAccent,
+              ),
+              title: new Text('Profile',
+                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+             ListTile(
+              leading: new Icon(
+                FontAwesomeIcons.suitcase,
+                color: Colors.redAccent,
+              ),
+              title: new Text('Your pack',
+                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+             ListTile(
+              leading: new Icon(
+                FontAwesomeIcons.bookOpen,
+                color: Colors.redAccent,
+              ),
+              title: new Text('Free pack',
+                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+             ListTile(
+              leading: new Icon(
+                FontAwesomeIcons.solidCalendar,
+                color: Colors.redAccent,
+              ),
+              title: new Text('Reserved services',
+                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+      body: new Column(
+        children: <Widget>[
           new HomePageBody(),
         ],
       ),
