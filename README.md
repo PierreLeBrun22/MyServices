@@ -1,6 +1,6 @@
 # MyServices
 
-**An application for reserve and manage all entreprise services.**  
+**An application for reserve and manage all entreprise's services.**  
 
 ## Authors
 
