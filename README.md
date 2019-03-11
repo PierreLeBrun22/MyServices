@@ -1,5 +1,7 @@
-# myservices
+# MyServices
 
-An App for reserve entreprise services.
+**An application for reserve and manage all entreprise services.**  
 
-Made by Pierre Le Brun
+## Authors
+
+* **Pierre LE BRUN** - [Github profile](https://github.com/PierreLeBrun22)
