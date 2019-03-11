@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/model/planets.dart';
-import 'package:myservices/Widgets/home/common/separator.dart';
-import 'package:myservices/Widgets/home/detail/detail_page.dart';
+import 'package:myservices/Widgets/SameListView/separator.dart';
+import 'package:myservices/Widgets/SameListView/detail_page.dart';
 import 'package:myservices/text_style.dart';
 
 class PlanetSummary extends StatelessWidget {

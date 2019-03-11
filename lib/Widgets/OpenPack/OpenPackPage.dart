@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/model/planets.dart';
-import 'package:myservices/Widgets/home/common/plannet_summary.dart';
+import 'package:myservices/Widgets/SameListView/plannet_summary.dart';
 
-class HomePageBody extends StatelessWidget {
+class OpenPackPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => new _OpenPackPageState();
+}
+
+class _OpenPackPageState extends State<OpenPackPage> {
   @override
   Widget build(BuildContext context) {
-    return new Expanded(
+   return new Expanded(
       child: new Container(
-        color: new Color(0xFF736AB7),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.05), BlendMode.dstATop),
+            image: AssetImage('assets/img/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: new CustomScrollView(
           scrollDirection: Axis.vertical,
           shrinkWrap: false,

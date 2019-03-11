@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'home_page_body.dart';
+import 'package:myservices/Widgets/Profile/ProfilMain.dart';
+import 'package:myservices/Widgets/OpenPack/OpenPackPage.dart';
+import 'package:myservices/Widgets/Reserved/ReservedPage.dart';
+import 'package:myservices/Widgets/YourPack/YourPackPage.dart';
+
+class DrawerItem {
+  String title;
+  IconData icon;
+  DrawerItem(this.title, this.icon);
+}
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.onSignedOut})
       : super(key: key);
+
+        final drawerItems = [
+    new DrawerItem("Profile",  FontAwesomeIcons.userAlt),
+    new DrawerItem("Your Pack",  FontAwesomeIcons.suitcase),
+    new DrawerItem("Open pack",  FontAwesomeIcons.bookOpen),
+    new DrawerItem("Reserved services",  FontAwesomeIcons.solidCalendar),
+  ];
 
   final BaseAuth auth;
   final VoidCallback onSignedOut;
@@ -16,7 +32,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
 
   _signOut() async {
     try {
@@ -74,8 +89,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  int _selectedDrawerIndex = 0;
+
+  _getDrawerItemWidget(int pos) {
+    switch (pos) {
+      case 0:
+        return new ProfilPage();
+      case 1:
+        return new YourPackPage();
+      case 2:
+        return new OpenPackPage();
+      case 3:
+        return new ReservedPage();
+
+      default:
+        return new Text("Error");
+    }
+  }
+  
+  _onSelectItem(int index) {
+    setState(() => _selectedDrawerIndex = index);
+    Navigator.of(context).pop(); // close the drawer
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Widget> drawerOptions = [];
+    for (var i = 0; i < widget.drawerItems.length; i++) {
+      var d = widget.drawerItems[i];
+      drawerOptions.add(
+         ListTile(
+              leading: new Icon(
+                d.icon,
+                color: Colors.redAccent,
+              ),
+              title: new Text(d.title,
+                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
+              selected: i == _selectedDrawerIndex,
+          onTap: () => _onSelectItem(i),
+            ),
+      );
+    }
+
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return new Scaffold(
@@ -92,7 +147,7 @@ class _HomePageState extends State<HomePage> {
             height: statusBarHeight + 66.0,
             child: new Center(
               child: new Text(
-                'MyServices',
+                widget.drawerItems[_selectedDrawerIndex].title,
                 style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'Satisfy',
@@ -132,7 +187,7 @@ class _HomePageState extends State<HomePage> {
           ),
                    new Center(
               child: new Text(
-                'Menu',
+                'MyServices',
                 style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'Satisfy',
@@ -151,68 +206,13 @@ class _HomePageState extends State<HomePage> {
                   tileMode: TileMode.clamp),
             ),
             ),
-            ListTile(
-              leading: new Icon(
-                FontAwesomeIcons.userAlt,
-                color: Colors.redAccent,
-              ),
-              title: new Text('Profile',
-                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-             ListTile(
-              leading: new Icon(
-                FontAwesomeIcons.suitcase,
-                color: Colors.redAccent,
-              ),
-              title: new Text('Your pack',
-                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-             ListTile(
-              leading: new Icon(
-                FontAwesomeIcons.bookOpen,
-                color: Colors.redAccent,
-              ),
-              title: new Text('Free pack',
-                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-             ListTile(
-              leading: new Icon(
-                FontAwesomeIcons.solidCalendar,
-                color: Colors.redAccent,
-              ),
-              title: new Text('Reserved services',
-                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
+            new Column(children: drawerOptions)
           ],
         ),
       ),
       body: new Column(
         children: <Widget>[
-          new HomePageBody(),
+          _getDrawerItemWidget(_selectedDrawerIndex),
         ],
       ),
     );
