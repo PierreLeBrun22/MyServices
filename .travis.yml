@@ -35,11 +35,13 @@ matrix:
         - yes | 'android-sdk-preview-license-.+'
         - yes | 'android-sdk-license-.+'
         - yes | 'google-gdk-license-.+'
+        - yes | flutter doctor --android-licenses
       android:
         components:
           - tools
           - platform-tools
           - build-tools-28.0.3
+          - build-tools-27
           - android-28
           - sys-img-armeabi-v7a-google_apis-25
           - extra-android-m2repository
@@ -62,7 +64,6 @@ matrix:
         - export PATH=$GRADLE_HOME/bin:$PATH
         - git clone https://github.com/flutter/flutter.git
       script:
-        - yes | flutter doctor --android-licenses
         - ./flutter/bin/flutter build apk --release
 
     # Builds an IPA.
@@ -73,8 +74,6 @@ matrix:
       before_script:
         - pip install six
         - brew update
-        - brew uninstall --ignore-dependencies libimobiledevice
-        - brew uninstall --ignore-dependencies usbmuxd
         - brew install --HEAD usbmuxd
         - brew install --HEAD libimobiledevice
         - brew install ideviceinstaller
