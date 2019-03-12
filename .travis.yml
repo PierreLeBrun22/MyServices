@@ -24,8 +24,8 @@ matrix:
             - fonts-droid
       before_script:
         - git clone https://github.com/flutter/flutter.git
-        - yes | flutter doctor --android-licenses
       script:
+        - yes | flutter doctor --android-licenses
         - ./flutter/bin/flutter test
 
     # Builds an APK.
