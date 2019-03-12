@@ -24,6 +24,7 @@ matrix:
             - fonts-droid
       before_script:
         - git clone https://github.com/flutter/flutter.git
+        - yes | flutter doctor --android-licenses
       script:
         - ./flutter/bin/flutter test
 
@@ -35,7 +36,6 @@ matrix:
         - yes | 'android-sdk-preview-license-.+'
         - yes | 'android-sdk-license-.+'
         - yes | 'google-gdk-license-.+'
-        - yes | flutter doctor --android-licenses
       android:
         components:
           - tools
