@@ -26,6 +26,8 @@ matrix:
         - git clone https://github.com/flutter/flutter.git
       script:
         - yes | ./flutter/bin/flutter doctor --android-licenses
+        - android update sdk --no-ui --all --filter platform-tools,android-25,extra-android-m2repository
+        - sdkmanager --update
         - ./flutter/bin/flutter test
 
     # Builds an APK.
@@ -43,6 +45,7 @@ matrix:
           - build-tools-28.0.3
           - build-tools-27
           - android-28
+          - android-27
           - sys-img-armeabi-v7a-google_apis-25
           - extra-android-m2repository
           - extra-google-m2repository
@@ -64,6 +67,7 @@ matrix:
         - export PATH=$GRADLE_HOME/bin:$PATH
         - git clone https://github.com/flutter/flutter.git
       script:
+        - yes | ./flutter/bin/flutter doctor --android-licenses
         - ./flutter/bin/flutter build apk --release
 
     # Builds an IPA.
