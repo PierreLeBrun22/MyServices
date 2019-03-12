@@ -33,21 +33,6 @@ class PlanetSummary extends StatelessWidget {
     );
 
 
-
-    Widget _planetValue({String value, String image}) {
-      return new Container(
-        child: new Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            new Image.asset(image, height: 12.0),
-            new Container(width: 9.0),
-            new Text(planet.gravity, style: Style.smallTextStyle),
-          ]
-        ),
-      );
-    }
-
-
     final planetCardContent = new Container(
       margin: new EdgeInsets.fromLTRB(horizontal ? 76.0 : 16.0, horizontal ? 16.0 : 42.0, 16.0, 16.0),
       constraints: new BoxConstraints.expand(),
@@ -56,30 +41,9 @@ class PlanetSummary extends StatelessWidget {
         children: <Widget>[
           new Container(height: 4.0),
           new Text(planet.name, style: Style.titleTextStyle),
+          new Separator(),
           new Container(height: 10.0),
           new Text(planet.location, style: Style.commonTextStyle),
-          new Separator(),
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Expanded(
-                flex: horizontal ? 1 : 0,
-                child: _planetValue(
-                  value: planet.distance,
-                  image: 'assets/img/ic_distance.png')
-
-              ),
-              new Container(
-                width: horizontal ? 8.0 : 32.0,
-              ),
-              new Expanded(
-                  flex: horizontal ? 1 : 0,
-                  child: _planetValue(
-                  value: planet.gravity,
-                  image: 'assets/img/ic_gravity.png')
-              )
-            ],
-          ),
         ],
       ),
     );
@@ -92,16 +56,22 @@ class PlanetSummary extends StatelessWidget {
         ? new EdgeInsets.only(left: 46.0)
         : new EdgeInsets.only(top: 72.0),
       decoration: new BoxDecoration(
-        color: new Color(0xFF333366),
+        color: Colors.white,
+       gradient: new LinearGradient(
+                  colors: [const Color(0xFFff5244), const Color(0xFFff968e)],
+                  begin: const FractionalOffset(1.0, 0.0),
+                  end: const FractionalOffset(0.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
         shape: BoxShape.rectangle,
-        borderRadius: new BorderRadius.circular(8.0),
         boxShadow: <BoxShadow>[
           new BoxShadow(
             color: Colors.black12,
             blurRadius: 10.0,
-            offset: new Offset(0.0, 10.0),
+            offset: new Offset(0.0, 8.0),
           ),
         ],
+        borderRadius: new BorderRadius.circular(8.0)
       ),
     );
 

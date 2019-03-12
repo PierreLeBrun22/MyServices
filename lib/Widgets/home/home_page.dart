@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
         final drawerItems = [
     new DrawerItem("Profile",  FontAwesomeIcons.userAlt),
-    new DrawerItem("Your Pack",  FontAwesomeIcons.suitcase),
+    new DrawerItem("Your pack",  FontAwesomeIcons.suitcase),
     new DrawerItem("Open pack",  FontAwesomeIcons.bookOpen),
     new DrawerItem("Reserved services",  FontAwesomeIcons.solidCalendar),
   ];
@@ -103,7 +103,16 @@ class _HomePageState extends State<HomePage> {
         return new ReservedPage();
 
       default:
-        return new Text("Error");
+        return new Center(
+              child: new Text(
+                widget.drawerItems[_selectedDrawerIndex].title,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Error',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 36.0),
+              ),
+            );
     }
   }
   

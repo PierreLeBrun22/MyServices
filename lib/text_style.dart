@@ -8,7 +8,7 @@ class Style {
     fontSize: 8.0,
   );
   static final commonTextStyle = baseTextStyle.copyWith(
-      color: const Color(0xffb6b2df),
+      color: Colors.white,
     fontSize: 14.0,
       fontWeight: FontWeight.w400
   );

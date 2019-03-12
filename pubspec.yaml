@@ -56,12 +56,4 @@ flutter:
         - asset: assets/fonts/Satisfy.ttf
 
   assets:
-    - assets/img/mars.png
-    - assets/img/neptune.png
-    - assets/img/moon.png
-    - assets/img/earth.png
-    - assets/img/mercury.png
-    - assets/img/ic_distance.png
-    - assets/img/ic_gravity.png
-    - assets/img/background.jpg
-    - assets/img/free-handshake-icon-27.png
+    - assets/img/
