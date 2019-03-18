@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _resentVerifyEmail(){
+  void _resentVerifyEmail() {
     widget.auth.sendEmailVerification();
   }
 
@@ -65,122 +65,161 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  } 
+  }
 
-    TextEditingController controller = new TextEditingController();
+  TextEditingController controller = new TextEditingController();
+  String _searchText = "";
 
-    int _currentIndex = 0;
+  Container _getAppBar() {
+    return new Container(
+      height: 60.0,
+      color: Color(0xFF43e97b),
+    );
+  }
+
+  Container _getSearchBar() {
+    return new Container(
+      margin: const EdgeInsets.only(top: 21.0, right: 8.0, left: 8.0),
+      child: new Card(
+        child: new ListTile(
+          leading: new Icon(Icons.search),
+          title: new TextField(
+            controller: controller,
+            decoration: new InputDecoration(
+                hintText: 'Search', border: InputBorder.none),
+          ),
+          trailing: new IconButton(
+            icon: new Icon(Icons.cancel),
+            onPressed: () {
+              controller.clear();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  int _currentIndex = 0;
 
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new ProfilPage(auth: widget.auth, onSignedOut: widget.onSignedOut);
+        return new Column(
+        children: <Widget>[
+          new ProfilPage(
+            auth: widget.auth, onSignedOut: widget.onSignedOut),
+          ]
+        );
       case 1:
-        return new YourPackPage();
+        return new Stack(
+          children: <Widget>[
+            new Container(
+              padding: EdgeInsets.only(top: 60.0),
+              child:  new Column(children: <Widget>[
+              YourPackPage(auth: widget.auth, onSignedOut: widget.onSignedOut, userId: widget.userId)
+              ]
+              ),
+            ),
+            _getAppBar(),
+            _getSearchBar()
+          ],
+        );
       case 2:
-        return new OpenPackPage();
+        return new Stack(
+          children: <Widget>[
+           new Container(
+              padding: EdgeInsets.only(top: 60.0),
+              child:  new Column(children: <Widget>[
+              OpenPackPage()
+              ]
+              ),
+            ),
+            _getAppBar(),
+            _getSearchBar()
+          ],
+        );
       case 3:
-        return new ReservedPage();
+        return new Stack(
+          children: <Widget>[
+            new Container(
+              padding: EdgeInsets.only(top: 60.0),
+              child:  new Column(children: <Widget>[
+              ReservedPage()
+              ]
+              ),
+            ),
+            _getAppBar(),
+            _getSearchBar()
+          ],
+        );
 
       default:
         return new Center(
-              child: new Text( 'Error',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Satisfy',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 36.0),
-              ),
-            );
+          child: new Text(
+            'Error',
+            style: const TextStyle(
+                color: Colors.white,
+                fontFamily: 'Satisfy',
+                fontWeight: FontWeight.w600,
+                fontSize: 36.0),
+          ),
+        );
     }
   }
-  
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-    }); 
+    });
   }
-
-  Container _getAppbar () {
-    return new Container(
-             color: Color(0xFF43e97b),
-      height: 10.0,
-    );
-  }
-
-  Container _getSearchBar () {
-    return new Container(
-             padding: EdgeInsets.only(top: 20.0),
-            color: Theme.of(context).primaryColor,
-            child: new Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: new Card(
-                child: new ListTile(
-                  leading: new Icon(Icons.search),
-                  title: new TextField(
-                    controller: controller,
-                    decoration: new InputDecoration(
-                        hintText: 'Search', border: InputBorder.none),
-                  ),
-                  trailing: new IconButton(icon: new Icon(Icons.cancel), onPressed: () {
-                    controller.clear();
-                  },),
-                ),
-              ),
-            ),
-          );
-  }
-  
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
-      body: new Column(
-        children: <Widget>[
-          new Stack (
-          children: <Widget>[
-           _getAppbar(),
-           _getSearchBar()
+      body: _getDrawerItemWidget(_currentIndex),
+      bottomNavigationBar: new Theme(
+        data: Theme.of(context).copyWith(
+          // sets the background color of the `BottomNavigationBar`
+          canvasColor: Color(0xFF4B4954),
+          // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+        ),
+        child: new BottomNavigationBar(
+          onTap: onTabTapped,
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.userAlt, color: Color(0xFF43e97b)),
+              title: Text(
+                'Profile',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.suitcase, color: Color(0xFF43e97b)),
+              title: Text(
+                'Your pack',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.bookOpen, color: Color(0xFF43e97b)),
+                title: Text(
+                  'Open pack',
+                  style: TextStyle(fontFamily: 'Poppins'),
+                )),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.solidCalendar,
+                    color: Color(0xFF43e97b)),
+                title: Text(
+                  'Reserved services',
+                  style: TextStyle(fontFamily: 'Poppins'),
+                ))
           ],
         ),
-          _getDrawerItemWidget(_currentIndex),
-        ],
       ),
-        bottomNavigationBar: new Theme(
-    data: Theme.of(context).copyWith(
-        // sets the background color of the `BottomNavigationBar`
-        canvasColor: Color(0xFF4B4954),
-        // sets the active color of the `BottomNavigationBar` if `Brightness` is light
-        ),
-    child: new BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.userAlt, color: Color(0xFF43e97b)),
-            title: Text('Profile', style: TextStyle(fontFamily: 'Poppins'),),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.suitcase, color: Color(0xFF43e97b)),
-            title: Text('Your pack', style: TextStyle(fontFamily: 'Poppins'),),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.bookOpen, color: Color(0xFF43e97b)),
-            title: Text('Open pack', style: TextStyle(fontFamily: 'Poppins'),)
-          ),
-           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.solidCalendar, color: Color(0xFF43e97b)),
-            title: Text('Reserved services', style: TextStyle(fontFamily: 'Poppins'),)
-          )
-        ],
-      ),
-  ),
     );
   }
 }
-
 
 /*class GradientAppBar extends StatefulWidget {
 
