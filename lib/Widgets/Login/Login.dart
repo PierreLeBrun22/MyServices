@@ -133,10 +133,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       body: Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: Colors.redAccent,
+        color: Color(0xFF302f33),
         image: DecorationImage(
           colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(0.1), BlendMode.dstATop),
+              Colors.black.withOpacity(0.05), BlendMode.dstATop),
           image: AssetImage('assets/img/background.jpg'),
           fit: BoxFit.cover,
         ),
@@ -148,7 +148,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             child: Center(
               child: new Icon(
                 FontAwesomeIcons.handshake,
-                color: Colors.white,
+                color: Color(0xFF43e97b),
                 size: 60.0,
               ),
             ),
@@ -175,8 +175,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   child: new OutlineButton(
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0)),
-                    color: Colors.redAccent,
-                    highlightedBorderColor: Colors.white,
+                    borderSide: BorderSide(color: Colors.white),
                     onPressed: () => gotoSignup(),
                     child: new Container(
                       padding: const EdgeInsets.symmetric(
@@ -213,7 +212,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   child: new FlatButton(
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0)),
-                    color: Colors.white,
+                    color: Color(0xFF43e97b),
                     onPressed: () => gotoLogin(),
                     child: new Container(
                       padding: const EdgeInsets.symmetric(
@@ -228,7 +227,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               "LOGIN",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Colors.redAccent,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -268,7 +267,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 child: Center(
                   child: new Icon(
                 FontAwesomeIcons.handshake,
-                color: Colors.redAccent,
+                color: Color(0xFF43e97b),
                 size: 60.0,
               ),
                 ),
@@ -282,7 +281,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         "EMAIL",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.redAccent,
+                          color: Color(0xFF43e97b),
                           fontSize: 15.0,
                         ),
                       ),
@@ -298,7 +297,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -342,7 +341,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         "PASSWORD",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.redAccent,
+                          color: Color(0xFF43e97b),
                           fontSize: 15.0,
                         ),
                       ),
@@ -358,7 +357,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -408,7 +407,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         onPressed: () => {_validateAndSubmitLogin()},
                         child: new Container(
                           padding: const EdgeInsets.symmetric(
@@ -464,7 +463,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 child: Center(
                   child: new Icon(
                 FontAwesomeIcons.handshake,
-                color: Colors.redAccent,
+                color: Color(0xFF43e97b),
                 size: 60.0,
               ),
                 ),
@@ -478,7 +477,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         "EMAIL",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.redAccent,
+                          color: Color(0xFF43e97b),
                           fontSize: 15.0,
                         ),
                       ),
@@ -494,7 +493,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -538,7 +537,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         "PASSWORD",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.redAccent,
+                          color: Color(0xFF43e97b),
                           fontSize: 15.0,
                         ),
                       ),
@@ -554,7 +553,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -598,7 +597,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         "CONFIRM PASSWORD",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.redAccent,
+                          color: Color(0xFF43e97b),
                           fontSize: 15.0,
                         ),
                       ),
@@ -614,7 +613,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -665,7 +664,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
-                        color: Colors.redAccent,
+                        color: Color(0xFF43e97b),
                         onPressed: () => {_validateAndSubmitSignup()},
                         child: new Container(
                           padding: const EdgeInsets.symmetric(

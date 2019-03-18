@@ -13,13 +13,7 @@ class _YourPackPageState extends State<YourPackPage> {
     return new Expanded(
       child: new Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          image: DecorationImage(
-            colorFilter: new ColorFilter.mode(
-                Colors.black.withOpacity(0.05), BlendMode.dstATop),
-            image: AssetImage('assets/img/background.jpg'),
-            fit: BoxFit.cover,
-          ),
+          color: Color(0xFF302f33),
         ),
         child: new CustomScrollView(
           scrollDirection: Axis.vertical,

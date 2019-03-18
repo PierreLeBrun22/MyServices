@@ -58,7 +58,7 @@ class PlanetSummary extends StatelessWidget {
       decoration: new BoxDecoration(
         color: Colors.white,
        gradient: new LinearGradient(
-                  colors: [const Color(0xFFff5244), const Color(0xFFff968e)],
+                  colors: [const Color(0xFF243949), const Color(0xFF517fa4)],
                   begin: const FractionalOffset(1.0, 0.0),
                   end: const FractionalOffset(0.0, 0.0),
                   stops: [0.0, 1.0],

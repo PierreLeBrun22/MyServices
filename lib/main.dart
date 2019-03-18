@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         title: 'MyServices',
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
-          primarySwatch: Colors.red,
+          primarySwatch: Colors.green,
         ),
         home: new RootPage(auth: new Auth()));
   }

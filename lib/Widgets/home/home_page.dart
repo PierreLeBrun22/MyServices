@@ -6,22 +6,9 @@ import 'package:myservices/Widgets/OpenPack/OpenPackPage.dart';
 import 'package:myservices/Widgets/Reserved/ReservedPage.dart';
 import 'package:myservices/Widgets/YourPack/YourPackPage.dart';
 
-class DrawerItem {
-  String title;
-  IconData icon;
-  DrawerItem(this.title, this.icon);
-}
-
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.onSignedOut})
       : super(key: key);
-
-        final drawerItems = [
-    new DrawerItem("Profile",  FontAwesomeIcons.userAlt),
-    new DrawerItem("Your pack",  FontAwesomeIcons.suitcase),
-    new DrawerItem("Open pack",  FontAwesomeIcons.bookOpen),
-    new DrawerItem("Reserved services",  FontAwesomeIcons.solidCalendar),
-  ];
 
   final BaseAuth auth;
   final VoidCallback onSignedOut;
@@ -32,15 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  _signOut() async {
-    try {
-      await widget.auth.signOut();
-      widget.onSignedOut();
-    } catch (e) {
-      print(e);
-    }
-  }
 
   bool _isEmailVerified = false;
 
@@ -87,14 +65,16 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
+  } 
 
-  int _selectedDrawerIndex = 0;
+    TextEditingController controller = new TextEditingController();
+
+    int _currentIndex = 0;
 
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new ProfilPage();
+        return new ProfilPage(auth: widget.auth, onSignedOut: widget.onSignedOut);
       case 1:
         return new YourPackPage();
       case 2:
@@ -104,11 +84,10 @@ class _HomePageState extends State<HomePage> {
 
       default:
         return new Center(
-              child: new Text(
-                widget.drawerItems[_selectedDrawerIndex].title,
+              child: new Text( 'Error',
                 style: const TextStyle(
                     color: Colors.white,
-                    fontFamily: 'Error',
+                    fontFamily: 'Satisfy',
                     fontWeight: FontWeight.w600,
                     fontSize: 36.0),
               ),
@@ -116,117 +95,92 @@ class _HomePageState extends State<HomePage> {
     }
   }
   
-  _onSelectItem(int index) {
-    setState(() => _selectedDrawerIndex = index);
-    Navigator.of(context).pop(); // close the drawer
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    }); 
   }
+
+  Container _getAppbar () {
+    return new Container(
+             color: Color(0xFF43e97b),
+      height: 10.0,
+    );
+  }
+
+  Container _getSearchBar () {
+    return new Container(
+             padding: EdgeInsets.only(top: 20.0),
+            color: Theme.of(context).primaryColor,
+            child: new Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new Card(
+                child: new ListTile(
+                  leading: new Icon(Icons.search),
+                  title: new TextField(
+                    controller: controller,
+                    decoration: new InputDecoration(
+                        hintText: 'Search', border: InputBorder.none),
+                  ),
+                  trailing: new IconButton(icon: new Icon(Icons.cancel), onPressed: () {
+                    controller.clear();
+                  },),
+                ),
+              ),
+            ),
+          );
+  }
+  
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> drawerOptions = [];
-    for (var i = 0; i < widget.drawerItems.length; i++) {
-      var d = widget.drawerItems[i];
-      drawerOptions.add(
-         ListTile(
-              leading: new Icon(
-                d.icon,
-                color: Colors.redAccent,
-              ),
-              title: new Text(d.title,
-                    style: new TextStyle(fontSize: 17.0, fontFamily: 'Poppins')),
-              selected: i == _selectedDrawerIndex,
-          onTap: () => _onSelectItem(i),
-            ),
-      );
-    }
-
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return new Scaffold(
-      appBar: new AppBar(
-        actions: <Widget>[
-            new FlatButton(
-                child: new Text('Logout',
-                    style: new TextStyle(fontSize: 17.0, color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold)),
-                onPressed: _signOut)
-          ],
-        flexibleSpace: 
-          new Container(
-            padding: new EdgeInsets.only(top: statusBarHeight),
-            height: statusBarHeight + 66.0,
-            child: new Center(
-              child: new Text(
-                widget.drawerItems[_selectedDrawerIndex].title,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Satisfy',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 36.0),
-              ),
-            ),
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                  colors: [const Color(0xFFff1b0a), const Color(0xFFff968e)],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-          ),
-      ),
-     drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the Drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: new Column(
-                children: <Widget>[
-                   new Container(
-            child: Center(
-              child: new Icon(
-                FontAwesomeIcons.handshake,
-                color: Colors.white,
-                size: 60.0,
-              ),
-            ),
-          ),
-                   new Center(
-              child: new Text(
-                'MyServices',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Satisfy',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 36.0),
-              ),
-            ),
-                ],
-              ),
-              decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                  colors: [const Color(0xFFff1b0a), const Color(0xFFff968e)],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-            ),
-            new Column(children: drawerOptions)
-          ],
-        ),
-      ),
       body: new Column(
         children: <Widget>[
-          _getDrawerItemWidget(_selectedDrawerIndex),
+          new Stack (
+          children: <Widget>[
+           _getAppbar(),
+           _getSearchBar()
+          ],
+        ),
+          _getDrawerItemWidget(_currentIndex),
         ],
       ),
+        bottomNavigationBar: new Theme(
+    data: Theme.of(context).copyWith(
+        // sets the background color of the `BottomNavigationBar`
+        canvasColor: Color(0xFF4B4954),
+        // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+        ),
+    child: new BottomNavigationBar(
+        onTap: onTabTapped,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.userAlt, color: Color(0xFF43e97b)),
+            title: Text('Profile', style: TextStyle(fontFamily: 'Poppins'),),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.suitcase, color: Color(0xFF43e97b)),
+            title: Text('Your pack', style: TextStyle(fontFamily: 'Poppins'),),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.bookOpen, color: Color(0xFF43e97b)),
+            title: Text('Open pack', style: TextStyle(fontFamily: 'Poppins'),)
+          ),
+           BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.solidCalendar, color: Color(0xFF43e97b)),
+            title: Text('Reserved services', style: TextStyle(fontFamily: 'Poppins'),)
+          )
+        ],
+      ),
+  ),
     );
   }
 }
+
 
 /*class GradientAppBar extends StatefulWidget {
 

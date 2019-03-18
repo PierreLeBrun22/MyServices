@@ -7,7 +7,7 @@ class Separator extends StatelessWidget {
         margin: new EdgeInsets.symmetric(vertical: 8.0),
         height: 2.0,
         width: 18.0,
-        color: Colors.white
+        color: Color(0xFF43e97b)
     );
   }
 }

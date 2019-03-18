@@ -14,8 +14,8 @@ class Style {
   );
   static final titleTextStyle = baseTextStyle.copyWith(
     color: Colors.white,
-    fontSize: 18.0,
-    fontWeight: FontWeight.w600
+    fontSize: 25.0,
+    fontFamily: 'Satisfy',
   );
   static final headerTextStyle = baseTextStyle.copyWith(
     color: Colors.white,
