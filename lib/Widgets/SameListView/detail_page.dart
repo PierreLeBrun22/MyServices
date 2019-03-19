@@ -16,7 +16,7 @@ class DetailPage extends StatelessWidget {
     return new Scaffold(
       body: new Container(
         constraints: new BoxConstraints.expand(),
-        color: new Color(0xFF736AB7),
+        color: Colors.white,
         child: new Stack (
           children: <Widget>[
             _getBackground(),
@@ -31,10 +31,7 @@ class DetailPage extends StatelessWidget {
 
   Container _getBackground () {
     return new Container(
-            child: new Image.network(planet.picture,
-              fit: BoxFit.cover,
-              height: 300.0,
-            ),
+            color: Color(0xFF4B4954),
             constraints: new BoxConstraints.expand(height: 295.0),
           );
   }
@@ -46,8 +43,8 @@ class DetailPage extends StatelessWidget {
             decoration: new BoxDecoration(
               gradient: new LinearGradient(
                 colors: <Color>[
-                  new Color(0x00736AB7),
-                  new Color(0xFF736AB7)
+                  new Color(0x00ffffff),
+                  new Color(0xFFffffff)
                 ],
                 stops: [0.0, 0.9],
                 begin: const FractionalOffset(0.0, 0.0),

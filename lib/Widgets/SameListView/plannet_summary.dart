@@ -43,7 +43,7 @@ class PlanetSummary extends StatelessWidget {
           new Text(planet.name, style: Style.titleTextStyle),
           new Separator(),
           new Container(height: 10.0),
-          new Text(planet.location, style: Style.commonTextStyle),
+          new Text(planet.location, style: Style.locationTextStyle),
         ],
       ),
     );
@@ -56,13 +56,8 @@ class PlanetSummary extends StatelessWidget {
         ? new EdgeInsets.only(left: 46.0)
         : new EdgeInsets.only(top: 72.0),
       decoration: new BoxDecoration(
-        color: Colors.white,
-       gradient: new LinearGradient(
-                  colors: [const Color(0xFF243949), const Color(0xFF517fa4)],
-                  begin: const FractionalOffset(1.0, 0.0),
-                  end: const FractionalOffset(0.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
+        color: Color(0xFF4B4954),
+        border: Border.all(color: Color(0xFF43e97b), width: 0.3),
         shape: BoxShape.rectangle,
         boxShadow: <BoxShadow>[
           new BoxShadow(
