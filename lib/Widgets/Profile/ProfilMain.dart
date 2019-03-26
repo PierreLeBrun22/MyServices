@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 const String SignOut = 'LOGOUT';
 
@@ -61,12 +62,15 @@ class _ProfilPageState extends State<ProfilPage> {
                         fontFamily: 'Poppins',
                         fontSize: 20.0),
                   ),
-                  SizedBox(height: 2.0),
                   Text(
-                    'Cadre',
-                    style: TextStyle(fontFamily: 'Poppins', color: Colors.grey,fontSize: 15.0),
+                    'Executive',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Color(0xFF43e97b),
+                        fontSize: 18.0),
                   ),
-                  _userDetails()
+                  _userDetails(),
+                  _circularProgress()
                 ],
               )
             ])));
@@ -109,14 +113,15 @@ class _ProfilPageState extends State<ProfilPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  '24K',
+                  'COMPANY',
                   style: TextStyle(
                       fontFamily: 'Poppins', fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'FOLLOWERS',
-                  style: TextStyle(fontFamily: 'Poppins', color: Colors.grey),
+                  'ORANGE LABS',
+                  style: TextStyle(
+                      fontFamily: 'Poppins', color: Color(0xFF43e97b)),
                 )
               ],
             ),
@@ -124,14 +129,16 @@ class _ProfilPageState extends State<ProfilPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  '31',
+                  'MAIL',
                   style: TextStyle(
                       fontFamily: 'Poppins', fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'TRIPS',
-                  style: TextStyle(fontFamily: 'Poppins', color: Colors.grey),
+                  'pierre.lebrun22300@...',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontFamily: 'Poppins', color: Color(0xFF43e97b)),
                 )
               ],
             ),
@@ -139,17 +146,18 @@ class _ProfilPageState extends State<ProfilPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  '21',
+                  'PACK',
                   style: TextStyle(
                       fontFamily: 'Poppins', fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'BUCKET LIST',
-                  style: TextStyle(fontFamily: 'Poppins', color: Colors.grey),
+                  'FAMILY',
+                  style: TextStyle(
+                      fontFamily: 'Poppins', color: Color(0xFF43e97b)),
                 )
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -164,6 +172,28 @@ class _ProfilPageState extends State<ProfilPage> {
             ),
           ],
           borderRadius: new BorderRadius.circular(8.0)),
+    );
+  }
+
+  Widget _circularProgress() {
+    return new CircularPercentIndicator(
+      radius: 120.0,
+      lineWidth: 10.0,
+      animation: true,
+      percent: 0.7,
+      center: new Text(
+        "70.0%",
+        style: new TextStyle(
+            fontFamily: 'Poppins', color: Colors.white, fontSize: 20.0),
+      ),
+      footer: new Text(
+        "Remaining services",
+        style: new TextStyle(
+            fontFamily: 'Poppins', color: Colors.white, fontSize: 17.0),
+      ),
+      circularStrokeCap: CircularStrokeCap.round,
+      progressColor: Color(0xFF43e97b),
+      backgroundColor: Colors.white,
     );
   }
 }

@@ -33,12 +33,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   GlobalKey _globalKey = GlobalKey();
   double _width = double.maxFinite;
 
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
    List<NewItem> items = <NewItem>[
     new NewItem(
         false,
