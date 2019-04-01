@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Login extends StatefulWidget {
   Login({this.auth, this.onSignedIn});
@@ -24,6 +25,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   String _passwordSignup;
   String _confirmPasswordSignup;
   String _errorMessageSignup;
+  String _firstName;
+  String _name;
+  List<String> _companyList = <String>['Choose one', 'Orange', 'Ericson', 'Nokia', 'McDo'];
+  String _company = 'Choose one';
+  List<String> _statutList = <String>['Choose one', 'Executive', 'Employee'];
+  String _statut = 'Choose one';
 
   bool _isIos;
   bool _isLoading;
@@ -643,6 +650,201 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         onSaved: (value) => _confirmPasswordSignup = value,
                       ),
                     ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: new Text(
+                        "FIRST NAME",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF43e97b),
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Color(0xFF43e97b),
+                        width: 0.5,
+                        style: BorderStyle.solid),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child: TextFormField(
+                        maxLines: 1,
+                        keyboardType: TextInputType.text,
+                        autofocus: false,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'First name',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            icon: new Icon(
+                              FontAwesomeIcons.userAlt,
+                              color: Colors.grey,
+                            )),
+                        validator: (value) =>
+                            value.isEmpty ? 'First name can\'t be empty' : null,
+                        onSaved: (value) => _firstName = value,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: new Text(
+                        "NAME",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF43e97b),
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Color(0xFF43e97b),
+                        width: 0.5,
+                        style: BorderStyle.solid),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child: TextFormField(
+                        maxLines: 1,
+                        keyboardType: TextInputType.text,
+                        autofocus: false,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Name',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            icon: new Icon(
+                              FontAwesomeIcons.userAlt,
+                              color: Colors.grey,
+                            )),
+                        validator: (value) =>
+                            value.isEmpty ? 'Name can\'t be empty' : null,
+                        onSaved: (value) => _name = value,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+               Divider(
+                height: 24.0,
+              ),
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: new Text(
+                        "COMPANY",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF43e97b),
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Color(0xFF43e97b),
+                        width: 0.5,
+                        style: BorderStyle.solid),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child:new FormField<String>(
+          builder: (FormFieldState<String> state) {
+            return InputDecorator(
+              decoration: InputDecoration(
+                icon: const Icon(FontAwesomeIcons.solidBuilding),
+                errorText: state.hasError ? state.errorText : null,
+              ),
+              isEmpty: _company == 'Choise one',
+              child: new DropdownButtonHideUnderline(
+                child: new DropdownButton<String>(
+                  value: _company,
+                  isDense: true,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      _company = newValue;
+                      state.didChange(newValue);
+                    });
+                  },
+                  items: _companyList.map((String value) {
+                    return new DropdownMenuItem<String>(
+                      value: value,
+                      child: new Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          },
+          validator: (val) {
+            return val != 'Choose one' ? null : 'Please select a company';
+          },
+        ),
+        )
                   ],
                 ),
               ),

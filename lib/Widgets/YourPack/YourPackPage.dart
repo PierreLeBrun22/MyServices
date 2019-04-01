@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myservices/model/planets.dart';
 import 'package:myservices/Widgets/SameListView/plannet_summary.dart';
 import 'package:myservices/services/authentication.dart';
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:myservices/model/todo.dart';
 import 'dart:async';
 
@@ -20,7 +20,7 @@ class YourPackPage extends StatefulWidget {
 
 class _YourPackPageState extends State<YourPackPage> {
 
-   void initState() {
+   /*void initState() {
     super.initState();
 
     _todoList = new List();
@@ -34,7 +34,7 @@ class _YourPackPageState extends State<YourPackPage> {
    List<Todo> _todoList;
 
   final FirebaseDatabase _database = FirebaseDatabase.instance;
-  Query _todoQuery;
+  Query _todoQuery;*/
 
   @override
   Widget build(BuildContext context) {

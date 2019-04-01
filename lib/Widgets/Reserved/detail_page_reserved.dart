@@ -51,7 +51,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     return new Scaffold(
       body: new Container(
         constraints: new BoxConstraints.expand(),
-        color: Color(0xFFffffff),
+        color: Color(0xFF4B4954),
         child: new Stack(
           children: <Widget>[
             _getContent(),
@@ -79,13 +79,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               children: <Widget>[
                 new Text(_overviewTitle,
                     style: TextStyle(
-                        color: Color(0xFF4B4954),
+                        color: Colors.white,
                         fontSize: 20.0,
                         fontFamily: 'Poppins')),
                 new Separator(),
                 new Text("This QR code works as a payment method, visit one of our partner companies and use it as a payment method. Simple, right? Once the QR code has been scanned, it will be impossible for you to cancel this service and this code will be unusable.",
                     style: TextStyle(
-                        color: Color(0xFF4B4954),
+                        color: Colors.white,
                         fontSize: 14.0,
                         fontFamily: 'Poppins')),
               ],
@@ -151,7 +151,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   Container _getToolbar(BuildContext context) {
     return new Container(
       margin: new EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: new BackButton(color: Color(0xFFffffff)),
+      child: new BackButton(color: Colors.white)
     );
   }
 
