@@ -27,9 +27,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   String _errorMessageSignup;
   String _firstName;
   String _name;
-  List<String> _companyList = <String>['Choose one', 'Orange', 'Ericson', 'Nokia', 'McDo'];
+   List<String> _companyList = <String>['Choose one'];
   String _company = 'Choose one';
-  List<String> _statutList = <String>['Choose one', 'Executive', 'Employee'];
+  List<String> _statutList = <String>['Choose one'];
   String _statut = 'Choose one';
 
   bool _isIos;
@@ -56,11 +56,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   // Perform login or signup
   void _validateAndSubmitLogin() async {
-    setState(() {
+    if (_validateAndSaveLogin()) {
+       setState(() {
       _errorMessageLogin = "";
       _isLoading = true;
     });
-    if (_validateAndSaveLogin()) {
         String userId = "";
       try {
         userId = await widget.auth.signIn(_emailLogin, _passwordLogin);
@@ -86,11 +86,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   }
 
   void _validateAndSubmitSignup() async {
-    setState(() {
+    if (_validateAndSaveSignup()) {
+       setState(() {
       _errorMessageSignup = "";
       _isLoading = true;
     });
-    if (_validateAndSaveSignup()) {
      if (_passwordSignup != _confirmPasswordSignup) {
         print('Error: The tow passwords entered do not match.');
         setState(() {
@@ -104,6 +104,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           userId = await widget.auth.signUp(_emailSignup, _passwordSignup);
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
+          _pushUserData(userId, _emailSignup, _firstName, _name, _company, _statut);
           print('Signed up user: $userId');
           final form = _formKeySignup.currentState;
           form.reset();
@@ -127,11 +128,33 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     }
   }
 
+  void _getCompany() async {  
+CollectionReference ref = Firestore.instance.collection('company');
+QuerySnapshot eventsQuery = await ref.getDocuments();
+    eventsQuery.documents.forEach((document) {
+       _companyList.add(document['name']);
+    });
+  }
+
+  void _getStatus() async {  
+CollectionReference ref = Firestore.instance.collection('status');
+QuerySnapshot eventsQuery = await ref.getDocuments();
+    eventsQuery.documents.forEach((document) {
+       _statutList.add(document['name']);
+    });
+  }
+
+   void _pushUserData(userID, email, firstName, name, company, status) {  
+     Firestore.instance.collection('user').add({userID: {"mail": email, "firstName": firstName, "name": name, "company": company, "status": status}});
+  }
+
   @override
   void initState() {
     _errorMessageSignup = "";
     _errorMessageLogin = "";
     _isLoading = false;
+    _getCompany();
+    _getStatus();
     super.initState();
   }
 
@@ -816,10 +839,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           builder: (FormFieldState<String> state) {
             return InputDecorator(
               decoration: InputDecoration(
-                icon: const Icon(FontAwesomeIcons.solidBuilding),
+                border: InputBorder.none,
+                icon: const Icon(FontAwesomeIcons.solidBuilding, color: Colors.grey),
                 errorText: state.hasError ? state.errorText : null,
               ),
-              isEmpty: _company == 'Choise one',
+              isEmpty: _company == 'Choose one',
               child: new DropdownButtonHideUnderline(
                 child: new DropdownButton<String>(
                   value: _company,
@@ -842,6 +866,82 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           },
           validator: (val) {
             return val != 'Choose one' ? null : 'Please select a company';
+          },
+        ),
+        )
+                  ],
+                ),
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: new Text(
+                        "STATUS",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF43e97b),
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Color(0xFF43e97b),
+                        width: 0.5,
+                        style: BorderStyle.solid),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child:new FormField<String>(
+          builder: (FormFieldState<String> state) {
+            return InputDecorator(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                icon: const Icon(FontAwesomeIcons.solidAddressBook, color: Colors.grey),
+                errorText: state.hasError ? state.errorText : null,
+              ),
+              isEmpty: _statut == 'Choose one',
+              child: new DropdownButtonHideUnderline(
+                child: new DropdownButton<String>(
+                  value: _statut,
+                  isDense: true,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      _statut = newValue;
+                      state.didChange(newValue);
+                    });
+                  },
+                  items: _statutList.map((String value) {
+                    return new DropdownMenuItem<String>(
+                      value: value,
+                      child: new Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          },
+          validator: (val) {
+            return val != 'Choose one' ? null : 'Please select a status';
           },
         ),
         )
