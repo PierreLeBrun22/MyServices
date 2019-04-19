@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
         return new Column(
         children: <Widget>[
           new ProfilPage(
-            auth: widget.auth, onSignedOut: widget.onSignedOut),
+            auth: widget.auth, onSignedOut: widget.onSignedOut, userId: widget.userId),
           ]
         );
       case 1:

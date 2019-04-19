@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 const String SignOut = 'LOGOUT';
 
 const List<String> choices = <String>[SignOut];
 
 class ProfilPage extends StatefulWidget {
-  ProfilPage({Key key, this.auth, this.onSignedOut}) : super(key: key);
+  ProfilPage({Key key, this.auth, this.onSignedOut, this.userId}) : super(key: key);
 
   final BaseAuth auth;
   final VoidCallback onSignedOut;
+  final String userId;
 
   @override
   State<StatefulWidget> createState() => new _ProfilPageState();
@@ -34,7 +36,15 @@ class _ProfilPageState extends State<ProfilPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Expanded(
+    return StreamBuilder<QuerySnapshot>(
+   stream: Firestore.instance.collection('user').snapshots(),
+   builder: (context, snapshot) {
+     if (!snapshot.hasData) return new Container(
+            color: Color(0xFF4B4954),
+            child: Center(child: CircularProgressIndicator()),
+     );
+     final record = snapshot.data.documents.where((data) => data.data.containsKey(widget.userId)).single.data[widget.userId];
+     return new Expanded(
         child: new Container(
             color: Color(0xFF4B4954),
             child: new ListView(children: <Widget>[
@@ -56,24 +66,26 @@ class _ProfilPageState extends State<ProfilPage> {
                   ),
                   SizedBox(height: 25.0),
                   Text(
-                    'Pierre Le Brun',
+                    record['firstName'] + " " + record['name'],
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Poppins',
                         fontSize: 20.0),
                   ),
                   Text(
-                    'Executive',
+                    record['status'],
                     style: TextStyle(
                         fontFamily: 'Poppins',
                         color: Color(0xFF43e97b),
                         fontSize: 18.0),
                   ),
-                  _userDetails(),
-                  _circularProgress()
+                  _userDetails(record['company'], record['mail'], record['pack']),
+                  _circularProgress(record['availableServices'], record['usedServices'])
                 ],
               )
             ])));
+   },
+ );
   }
 
   Widget _logout() {
@@ -101,7 +113,7 @@ class _ProfilPageState extends State<ProfilPage> {
         ));
   }
 
-  Widget _userDetails() {
+  Widget _userDetails(String _company, String _mail, String _pack) {
     return new Container(
       margin: EdgeInsets.all(10.0),
       child: Padding(
@@ -119,7 +131,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'ORANGE LABS',
+                  _company,
                   style: TextStyle(
                       fontFamily: 'Poppins', color: Color(0xFF43e97b)),
                 )
@@ -135,7 +147,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'pierre.lebrun22300@...',
+                  _mail,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       fontFamily: 'Poppins', color: Color(0xFF43e97b)),
@@ -152,7 +164,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 ),
                 SizedBox(height: 5.0),
                 Text(
-                  'FAMILY',
+                  _pack,
                   style: TextStyle(
                       fontFamily: 'Poppins', color: Color(0xFF43e97b)),
                 )
@@ -175,14 +187,16 @@ class _ProfilPageState extends State<ProfilPage> {
     );
   }
 
-  Widget _circularProgress() {
+  Widget _circularProgress(int availableServices, int usedServices) {
+    final remainingServices = availableServices-usedServices;
+    double percentage = remainingServices/availableServices;
     return new CircularPercentIndicator(
       radius: 120.0,
       lineWidth: 10.0,
       animation: true,
-      percent: 0.7,
+      percent: percentage,
       center: new Text(
-        "70.0%",
+        remainingServices.toString()+" / "+availableServices.toString(),
         style: new TextStyle(
             fontFamily: 'Poppins', color: Colors.white, fontSize: 20.0),
       ),

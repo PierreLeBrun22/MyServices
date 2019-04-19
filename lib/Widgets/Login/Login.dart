@@ -31,6 +31,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   String _company = 'Choose one';
   List<String> _statutList = <String>['Choose one'];
   String _statut = 'Choose one';
+  List<String> _packList = <String>['Choose one'];
+  String _pack = 'Choose one';
 
   bool _isIos;
   bool _isLoading;
@@ -95,7 +97,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         print('Error: The tow passwords entered do not match.');
         setState(() {
           _isLoading = false;
-          _errorMessageSignup = 'The tow passwords entered do not match.';
+          _errorMessageSignup = 'The two passwords entered do not match.';
         });
       } 
       else {
@@ -104,7 +106,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           userId = await widget.auth.signUp(_emailSignup, _passwordSignup);
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
-          _pushUserData(userId, _emailSignup, _firstName, _name, _company, _statut);
+          _pushUserData(userId, _emailSignup, _firstName, _name, _company, _statut, _pack);
           print('Signed up user: $userId');
           final form = _formKeySignup.currentState;
           form.reset();
@@ -113,6 +115,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             _emailSignup = '';
             _passwordSignup = '';
             _confirmPasswordSignup = '';
+            _pack = 'Choose one';
+            _company = 'Choose one';
+            _statut = 'Choose one';
           });
         } catch (e) {
           print('Error: $e');
@@ -136,6 +141,14 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     });
   }
 
+    void _getPack() async {  
+CollectionReference ref = Firestore.instance.collection('packs');
+QuerySnapshot eventsQuery = await ref.getDocuments();
+    eventsQuery.documents.forEach((document) {
+       _packList.add(document['name']);
+    });
+  }
+
   void _getStatus() async {  
 CollectionReference ref = Firestore.instance.collection('status');
 QuerySnapshot eventsQuery = await ref.getDocuments();
@@ -144,8 +157,13 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     });
   }
 
-   void _pushUserData(userID, email, firstName, name, company, status) {  
-     Firestore.instance.collection('user').add({userID: {"mail": email, "firstName": firstName, "name": name, "company": company, "status": status}});
+   void _pushUserData(userID, email, firstName, name, company, status, pack) {  
+     if(status == 'Executive') {
+       Firestore.instance.collection('user').add({userID: {"mail": email, "firstName": firstName, "name": name, "company": company, "status": status, "pack": pack, "availableServices": 10, "usedServices": 0}});
+     }
+     else {
+       Firestore.instance.collection('user').add({userID: {"mail": email, "firstName": firstName, "name": name, "company": company, "status": status, "pack": pack, "availableServices": 5, "usedServices": 0}});
+     }
   }
 
   @override
@@ -155,6 +173,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     _isLoading = false;
     _getCompany();
     _getStatus();
+    _getPack();
     super.initState();
   }
 
@@ -942,6 +961,82 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
           },
           validator: (val) {
             return val != 'Choose one' ? null : 'Please select a status';
+          },
+        ),
+        )
+                  ],
+                ),
+              ),
+               Divider(
+                height: 24.0,
+              ),
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: new Text(
+                        "PACK",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF43e97b),
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Color(0xFF43e97b),
+                        width: 0.5,
+                        style: BorderStyle.solid),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child:new FormField<String>(
+          builder: (FormFieldState<String> state) {
+            return InputDecorator(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                icon: const Icon(FontAwesomeIcons.suitcase, color: Colors.grey),
+                errorText: state.hasError ? state.errorText : null,
+              ),
+              isEmpty: _pack == 'Choose one',
+              child: new DropdownButtonHideUnderline(
+                child: new DropdownButton<String>(
+                  value: _pack,
+                  isDense: true,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      _pack = newValue;
+                      state.didChange(newValue);
+                    });
+                  },
+                  items: _packList.map((String value) {
+                    return new DropdownMenuItem<String>(
+                      value: value,
+                      child: new Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          },
+          validator: (val) {
+            return val != 'Choose one' ? null : 'Please select a pack';
           },
         ),
         )
