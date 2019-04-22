@@ -11,7 +11,7 @@ class _ReservedPageState extends State<ReservedPage> {
   @override
   Widget build(BuildContext context) {
     return new Expanded(
-      child: new Container(
+      /*child: new Container(
         decoration: BoxDecoration(
           color: Color(0xFF302f33),
         ),
@@ -30,7 +30,7 @@ class _ReservedPageState extends State<ReservedPage> {
             ),
           ],
         ),
-      ),
+      ),*/
     );
   }
 }

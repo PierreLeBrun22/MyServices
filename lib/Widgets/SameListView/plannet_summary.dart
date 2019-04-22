@@ -24,8 +24,8 @@ class PlanetSummary extends StatelessWidget {
       alignment: horizontal ? FractionalOffset.centerLeft : FractionalOffset.center,
       child: new Hero(
           tag: "planet-hero-${planet.id}",
-          child: new Image(
-          image: new AssetImage(planet.image),
+          child: new Image.network(
+          planet.image,
           height: 92.0,
           width: 92.0,
         ),
