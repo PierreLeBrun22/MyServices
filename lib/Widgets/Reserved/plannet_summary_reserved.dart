@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:myservices/model/planets.dart';
+import 'package:myservices/model/service.dart';
 import 'package:myservices/Widgets/SameListView/separator.dart';
 import 'package:myservices/Widgets/Reserved/detail_page_reserved.dart';
 import 'package:myservices/text_style.dart';
 
 class PlanetSummary extends StatelessWidget {
 
-  final Planet planet;
+  final Service planet;
   final bool horizontal;
 
   PlanetSummary(this.planet, {this.horizontal = true});
@@ -23,7 +23,7 @@ class PlanetSummary extends StatelessWidget {
       ),
       alignment: horizontal ? FractionalOffset.centerLeft : FractionalOffset.center,
       child: new Hero(
-          tag: "planet-hero-${planet.id}",
+          tag: "planet-hero-${planet.name}",
           child: new Image(
           image: new AssetImage(planet.image),
           height: 92.0,

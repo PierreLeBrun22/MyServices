@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myservices/model/planets.dart';
+import 'package:myservices/model/service.dart';
 import 'package:myservices/Widgets/Reserved/plannet_summary_reserved.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +7,7 @@ import 'package:myservices/Widgets/SameListView/separator.dart';
 import 'dart:async';
 
 class DetailPage extends StatefulWidget {
-  final Planet planet;
+  final Service planet;
 
   DetailPage(this.planet);
 

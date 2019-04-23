@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myservices/model/planets.dart';
+import 'package:myservices/model/service.dart';
 import 'package:myservices/Widgets/Reserved/plannet_summary_reserved.dart';
 
 class ReservedPage extends StatefulWidget {

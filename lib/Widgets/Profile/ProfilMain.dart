@@ -8,7 +8,8 @@ const String SignOut = 'LOGOUT';
 const List<String> choices = <String>[SignOut];
 
 class ProfilPage extends StatefulWidget {
-  ProfilPage({Key key, this.auth, this.onSignedOut, this.userId}) : super(key: key);
+  ProfilPage({Key key, this.auth, this.onSignedOut, this.userId})
+      : super(key: key);
 
   final BaseAuth auth;
   final VoidCallback onSignedOut;
@@ -37,55 +38,64 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-   stream: Firestore.instance.collection('user').snapshots(),
-   builder: (context, snapshot) {
-     if (!snapshot.hasData) return new Container(
-            color: Color(0xFF4B4954),
+      stream: Firestore.instance.collection('user').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return new Expanded(
+              child: new Container(
+            decoration: BoxDecoration(
+              color: Color(0xFF302f33),
+            ),
             child: Center(child: CircularProgressIndicator()),
-     );
-     final record = snapshot.data.documents.where((data) => data.data.containsKey(widget.userId)).single.data[widget.userId];
-     return new Expanded(
-        child: new Container(
-            color: Color(0xFF4B4954),
-            child: new ListView(children: <Widget>[
-              _logout(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Hero(
-                    tag: 'assets/img/user.png',
-                    child: Container(
-                      height: 125.0,
-                      width: 125.0,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(62.5),
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/img/user.png'))),
-                    ),
-                  ),
-                  SizedBox(height: 25.0),
-                  Text(
-                    record['firstName'] + " " + record['name'],
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Poppins',
-                        fontSize: 20.0),
-                  ),
-                  Text(
-                    record['status'],
-                    style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Color(0xFF43e97b),
-                        fontSize: 18.0),
-                  ),
-                  _userDetails(record['company'], record['mail'], record['pack']),
-                  _circularProgress(record['availableServices'], record['usedServices'])
-                ],
-              )
-            ])));
-   },
- );
+          ));
+        final record = snapshot.data.documents
+            .where((data) => data.data.containsKey(widget.userId))
+            .single
+            .data[widget.userId];
+        return new Expanded(
+            child: new Container(
+                color: Color(0xFF302f33),
+                child: new ListView(children: <Widget>[
+                  _logout(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Hero(
+                        tag: 'assets/img/user.png',
+                        child: Container(
+                          height: 125.0,
+                          width: 125.0,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(62.5),
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/img/user.png'))),
+                        ),
+                      ),
+                      SizedBox(height: 25.0),
+                      Text(
+                        record['firstName'] + " " + record['name'],
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontSize: 20.0),
+                      ),
+                      Text(
+                        record['status'],
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Color(0xFF43e97b),
+                            fontSize: 18.0),
+                      ),
+                      _userDetails(
+                          record['company'], record['mail'], record['pack']),
+                      _circularProgress(
+                          record['availableServices'], record['usedServices'])
+                    ],
+                  )
+                ])));
+      },
+    );
   }
 
   Widget _logout() {
@@ -188,15 +198,15 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Widget _circularProgress(int availableServices, int usedServices) {
-    final remainingServices = availableServices-usedServices;
-    double percentage = remainingServices/availableServices;
+    final remainingServices = availableServices - usedServices;
+    double percentage = remainingServices / availableServices;
     return new CircularPercentIndicator(
       radius: 120.0,
       lineWidth: 10.0,
       animation: true,
       percent: percentage,
       center: new Text(
-        remainingServices.toString()+" / "+availableServices.toString(),
+        remainingServices.toString() + " / " + availableServices.toString(),
         style: new TextStyle(
             fontFamily: 'Poppins', color: Colors.white, fontSize: 20.0),
       ),

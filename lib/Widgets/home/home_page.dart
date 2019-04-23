@@ -5,7 +5,9 @@ import 'package:myservices/Widgets/Profile/ProfilMain.dart';
 import 'package:myservices/Widgets/OpenPack/OpenPackPage.dart';
 import 'package:myservices/Widgets/Reserved/ReservedPage.dart';
 import 'package:myservices/Widgets/YourPack/YourPackPage.dart';
-import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myservices/model/service.dart';
+import 'package:myservices/services/fetch_data.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.onSignedOut})
@@ -20,13 +22,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  String userPack;
   bool _isEmailVerified = false;
 
   @override
   void initState() {
     super.initState();
     _checkEmailVerification();
+    _getData();
   }
 
   void _checkEmailVerification() async {
@@ -67,6 +70,19 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
+   void _getData() async {
+    CollectionReference ref = Firestore.instance.collection('user');
+    QuerySnapshot eventsQuery = await ref.getDocuments();
+    eventsQuery.documents.forEach((document) {
+      if (document.data.containsKey(widget.userId)) {
+        setState(() {
+          userPack = document.data[widget.userId]['pack'];
+        });
+      }
+    });
+  }
+
 
   TextEditingController controller = new TextEditingController();
   String _searchText = "";
@@ -117,7 +133,21 @@ class _HomePageState extends State<HomePage> {
             new Container(
               padding: EdgeInsets.only(top: 60.0),
               child:  new Column(children: <Widget>[
-              YourPackPage(auth: widget.auth, onSignedOut: widget.onSignedOut, userId: widget.userId)
+                FutureBuilder<List<Service>>(
+      future: getServices(userPack),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) print(snapshot.error);
+        return snapshot.hasData
+            ? YourPackPage(auth: widget.auth, onSignedOut: widget.onSignedOut, userId: widget.userId, userPack: userPack, services: snapshot.data)
+            : new Expanded(
+                child: new Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFF302f33),
+                ),
+                child: Center(child: CircularProgressIndicator()),
+              ));
+      },
+    )
               ]
               ),
             ),
@@ -131,7 +161,21 @@ class _HomePageState extends State<HomePage> {
            new Container(
               padding: EdgeInsets.only(top: 60.0),
               child:  new Column(children: <Widget>[
-              OpenPackPage()
+                 FutureBuilder<List<Service>>(
+      future: getServicesOpenPack(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) print(snapshot.error);
+        return snapshot.hasData
+            ?  OpenPackPage(userId: widget.userId, services: snapshot.data)
+            : new Expanded(
+                child: new Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFF302f33),
+                ),
+                child: Center(child: CircularProgressIndicator()),
+              ));
+      },
+    )
               ]
               ),
             ),
