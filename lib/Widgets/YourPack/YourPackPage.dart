@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/model/service.dart';
 import 'package:myservices/Widgets/SameListView/plannet_summary.dart';
-import 'package:myservices/services/authentication.dart';
 
 class YourPackPage extends StatefulWidget {
-  YourPackPage({Key key, this.auth, this.userId, this.onSignedOut, this.userPack, this.services})
+  YourPackPage({Key key, this.userId, this.services})
       : super(key: key);
 
-  final BaseAuth auth;
-  final VoidCallback onSignedOut;
   final String userId;
-  final String userPack;
   final List<Service> services;
 
   @override

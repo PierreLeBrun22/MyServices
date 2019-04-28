@@ -6,6 +6,7 @@ import 'package:myservices/text_style.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:myservices/services/fetch_data.dart' as dataFetch;
 
 class DetailPage extends StatefulWidget {
   final Service planet;
@@ -18,6 +19,7 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   int userAvailableServices;
+  int userUsedServices;
   int _state = 0;
   Animation _animation;
   AnimationController _controller;
@@ -29,7 +31,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       false,
       'OUR PARTNERS',
       new Icon(FontAwesomeIcons.building, color: Color(0xFF43e97b)),
-      //give all your items here
     )
   ];
 
@@ -41,6 +42,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         setState(() {
           userAvailableServices =
               document.data[widget.userId]['availableServices'];
+          userUsedServices = document.data[widget.userId]['usedServices'];
         });
       }
     });
@@ -50,20 +52,36 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     CollectionReference ref = Firestore.instance.collection('userServices');
     QuerySnapshot eventsQuery = await ref.getDocuments();
     eventsQuery.documents.forEach((document) {
-      if (document.data.containsValue(widget.userId) && document.data.containsValue(widget.planet.serviceId)) {
+      if (document.data.containsValue(widget.userId) &&
+          document.data.containsValue(widget.planet.serviceId)) {
         setState(() {
           _state = 2;
+          _width = 50;
         });
       }
     });
   }
 
-  void _pushUserData() {
-    if (userAvailableServices > 0) {
-      Firestore.instance
-          .collection('userServices')
-          .add({"userId": widget.userId, "serviceId": widget.planet.serviceId});
-    }
+  void _noMoreServices() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("You have used all your services"),
+          content: new Text(
+              "Cancel a service or wait until your account is reloaded to book this service"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Dismiss"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -226,8 +244,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                 onPressed: () {
                   setState(() {
                     if (_state == 0) {
-                      animateButton();
-                      _pushUserData();
+                      dataFetch.pushUserDataReserve(
+                          userUsedServices,
+                          userAvailableServices,
+                          widget.userId,
+                          widget.planet.serviceId,
+                          animateButton,
+                          _noMoreServices);
                     }
                   });
                 },
@@ -262,10 +285,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       );
     } else {
       return SizedBox(
-        height: 36,
-        width: 36,
-        child: Icon(Icons.check, color: Colors.white)
-      );
+          height: 36, width: 36, child: Icon(Icons.check, color: Colors.white));
     }
   }
 
@@ -287,7 +307,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       _state = 1;
     });
 
-    Timer(Duration(milliseconds: 3300), () {
+    Timer(Duration(milliseconds: 1500), () {
       setState(() {
         _state = 2;
       });

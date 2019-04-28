@@ -7,7 +7,7 @@ import 'package:myservices/Widgets/Reserved/ReservedPage.dart';
 import 'package:myservices/Widgets/YourPack/YourPackPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myservices/model/service.dart';
-import 'package:myservices/services/fetch_data.dart';
+import 'package:myservices/services/fetch_data.dart' as dataFetch;
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.onSignedOut})
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-   void _getData() async {
+  void _getData() async {
     CollectionReference ref = Firestore.instance.collection('user');
     QuerySnapshot eventsQuery = await ref.getDocuments();
     eventsQuery.documents.forEach((document) {
@@ -83,10 +83,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-  TextEditingController controller = new TextEditingController();
-  String _searchText = "";
-
   Container _getAppBar() {
     return new Container(
       height: 60.0,
@@ -94,25 +90,28 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container _getSearchBar() {
+  Container _getAppbarWhite() {
     return new Container(
-      margin: const EdgeInsets.only(top: 21.0, right: 8.0, left: 8.0),
-      child: new Card(
-        child: new ListTile(
-          leading: new Icon(Icons.search),
-          title: new TextField(
-            controller: controller,
-            decoration: new InputDecoration(
-                hintText: 'Search', border: InputBorder.none),
-          ),
-          trailing: new IconButton(
-            icon: new Icon(Icons.cancel),
-            onPressed: () {
-              controller.clear();
-            },
-          ),
-        ),
+      margin: const EdgeInsets.only(top: 24.0, right: 12.0, left: 12.0),
+      height: 55,
+      decoration: BoxDecoration(
+      borderRadius: new BorderRadius.circular(4.0),
+      color: Color(0xFFf7f7f7),
       ),
+      child:  Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+  children: <Widget>[
+     new Icon(FontAwesomeIcons.handshake,color: Color(0xFF43e97b),size: 40.0,),  
+    new Padding(
+       padding: const EdgeInsets.only(left: 35.0),
+      child: Text('MyServices', style: TextStyle(fontFamily: 'Satisfy', fontSize: 30, color: Color(0xFF4B4954))),
+    ),
+     new Padding(
+       padding: const EdgeInsets.only(left: 20.0),
+    child: new Icon(FontAwesomeIcons.handshake,color: Color(0xFF43e97b),size: 40.0,),
+     ),
+  ],
+),
     );
   }
 
@@ -121,66 +120,92 @@ class _HomePageState extends State<HomePage> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new Column(
-        children: <Widget>[
+        return new Column(children: <Widget>[
           new ProfilPage(
-            auth: widget.auth, onSignedOut: widget.onSignedOut, userId: widget.userId),
-          ]
-        );
+              auth: widget.auth,
+              onSignedOut: widget.onSignedOut,
+              userId: widget.userId),
+        ]);
       case 1:
-        return new Stack(
-          children: <Widget>[
-            new Container(
-              padding: EdgeInsets.only(top: 60.0),
-              child:  new Column(children: <Widget>[
-                FutureBuilder<List<Service>>(
-      future: getServices(userPack),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) print(snapshot.error);
-        return snapshot.hasData
-            ? YourPackPage(auth: widget.auth, onSignedOut: widget.onSignedOut, userId: widget.userId, userPack: userPack, services: snapshot.data)
-            : new Expanded(
-                child: new Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF302f33),
+        return StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance.collection('user').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return new Stack(children: <Widget>[
+                new Container(
+                    padding: EdgeInsets.only(top: 60.0),
+                    child: new Column(children: <Widget>[
+                      new Expanded(
+                          child: new Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF302f33),
+                        ),
+                        child: Center(child: CircularProgressIndicator()),
+                      ))
+                    ])),
+                    _getAppBar(),
+                _getAppbarWhite()
+              ]);
+            final record = snapshot.data.documents
+                .where((data) => data.data.containsKey(widget.userId))
+                .single
+                .data[widget.userId];
+            return new Stack(
+              children: <Widget>[
+                new Container(
+                  padding: EdgeInsets.only(top: 60.0),
+                  child: new Column(children: <Widget>[
+                    FutureBuilder<List<Service>>(
+                      future: dataFetch.getServices(record['pack']),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) print(snapshot.error);
+                        return snapshot.hasData
+                            ? YourPackPage(
+                                userId: widget.userId, services: snapshot.data)
+                            : new Expanded(
+                                child: new Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF302f33),
+                                ),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              ));
+                      },
+                    )
+                  ]),
                 ),
-                child: Center(child: CircularProgressIndicator()),
-              ));
-      },
-    )
-              ]
-              ),
-            ),
-            _getAppBar(),
-            _getSearchBar()
-          ],
+                _getAppBar(),
+                _getAppbarWhite()
+              ],
+            );
+          },
         );
       case 2:
         return new Stack(
           children: <Widget>[
-           new Container(
+            new Container(
               padding: EdgeInsets.only(top: 60.0),
-              child:  new Column(children: <Widget>[
-                 FutureBuilder<List<Service>>(
-      future: getServicesOpenPack(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) print(snapshot.error);
-        return snapshot.hasData
-            ?  OpenPackPage(userId: widget.userId, services: snapshot.data)
-            : new Expanded(
-                child: new Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF302f33),
-                ),
-                child: Center(child: CircularProgressIndicator()),
-              ));
-      },
-    )
-              ]
-              ),
+              child: new Column(children: <Widget>[
+                FutureBuilder<List<Service>>(
+                  future: dataFetch.getServicesOpenPack(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? OpenPackPage(
+                            userId: widget.userId, services: snapshot.data)
+                        : new Expanded(
+                            child: new Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFF302f33),
+                            ),
+                            child: Center(child: CircularProgressIndicator()),
+                          ));
+                  },
+                )
+              ]),
             ),
             _getAppBar(),
-            _getSearchBar()
+            _getAppbarWhite()
           ],
         );
       case 3:
@@ -188,13 +213,27 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             new Container(
               padding: EdgeInsets.only(top: 60.0),
-              child:  new Column(children: <Widget>[
-              ReservedPage()
-              ]
-              ),
+              child: new Column(children: <Widget>[
+                FutureBuilder<List<Service>>(
+                  future: dataFetch.getUserReservedServices(widget.userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? ReservedPage(
+                            userId: widget.userId, services: snapshot.data)
+                        : new Expanded(
+                            child: new Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFF302f33),
+                            ),
+                            child: Center(child: CircularProgressIndicator()),
+                          ));
+                  },
+                )
+              ]),
             ),
             _getAppBar(),
-            _getSearchBar()
+            _getAppbarWhite()
           ],
         );
 
@@ -265,71 +304,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-/*class GradientAppBar extends StatefulWidget {
-
-  final String title;
-  final double barHeight = 66.0;
-
-  GradientAppBar(this.title);
-
-  @override
-  State<StatefulWidget> createState() => new _GradientAppBarState();
-}
-
-class _GradientAppBarState extends State<GradientAppBar> {
-
-  _signOut() async {
-    try {
-      await HomePage.auth.signOut();
-      HomePage().onSignedOut();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double statusBarHeight = MediaQuery
-      .of(context)
-      .padding
-      .top;
-
-    return new Container(
-      padding: new EdgeInsets.only(top: statusBarHeight),
-      height: statusBarHeight + widget.barHeight,
-      child: new Row(
-  children: [
-    new Center(
-        child: new Text(widget.title,
-          style:const TextStyle(
-            color: Colors.white,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 36.0
-          ),
-        ),
-      ),
-      new Container(
-       child: new FlatButton(
-                child: new Text('Logout',
-                    style: new TextStyle(fontSize: 17.0, color: Colors.white)),
-                onPressed: _signOut), 
-      )
-  ]
-),
-      decoration: new BoxDecoration(
-        gradient: new LinearGradient(
-          colors: [
-            const Color(0xFF3366FF),
-            const Color(0xFF00CCFF)
-          ],
-          begin: const FractionalOffset(0.0, 0.0),
-          end: const FractionalOffset(1.0, 0.0),
-          stops: [0.0, 1.0],
-          tileMode: TileMode.clamp
-        ),
-      ),
-    );
-  }
-}*/

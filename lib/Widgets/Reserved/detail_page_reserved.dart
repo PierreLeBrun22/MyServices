@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:myservices/model/service.dart';
-import 'package:myservices/Widgets/Reserved/plannet_summary_reserved.dart';
+import 'package:myservices/Widgets/SameListView/plannet_summary.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myservices/Widgets/SameListView/separator.dart';
 import 'dart:async';
+import 'package:myservices/services/fetch_data.dart' as dataFetch;
 
 class DetailPage extends StatefulWidget {
   final Service planet;
+  final String userId;
 
-  DetailPage(this.planet);
+  DetailPage(this.planet, this.userId);
 
   State<StatefulWidget> createState() => new _DetailPageState();
 }
-
-class NewItem {
-  bool isExpanded;
-  final String header;
-  final Widget body;
-  final Icon iconpic;
-  NewItem(this.isExpanded, this.header, this.body, this.iconpic);
-}
-
-double discretevalue = 2.0;
-double hospitaldiscretevalue = 25.0;
 
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   int _state = 0;
@@ -36,15 +27,31 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     new NewItem(
       false,
       'WHERE TO USE IT',
-      new Padding(
-          padding: new EdgeInsets.all(20.0),
-          child: new Column(children: <Widget>[
-            //put the children here
-          ])),
       new Icon(FontAwesomeIcons.questionCircle, color: Color(0xFF43e97b)),
-      //give all your items here
     )
   ];
+
+  void _serviceUsed() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("You have used this service"),
+          content: new Text(
+              "You cannot cancel this booking, go back to the previous page"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Dismiss"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +77,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         children: <Widget>[
           new PlanetSummary(
             widget.planet,
+            widget.userId,
             horizontal: false,
           ),
           new Container(
@@ -83,7 +91,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                         fontSize: 20.0,
                         fontFamily: 'Poppins')),
                 new Separator(),
-                new Text("This QR code works as a payment method, visit one of our partner companies and use it as a payment method. Simple, right? Once the QR code has been scanned, it will be impossible for you to cancel this service and this code will be unusable.",
+                new Text(
+                    "This QR code works as a payment method, visit one of our partner companies and use it as a payment method. Simple, right? Once the QR code has been scanned, it will be impossible for you to cancel this service and this code will be unusable.",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.0,
@@ -97,7 +106,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               child: Padding(
                 padding: EdgeInsets.all(10.0),
                 child: new QrImage(
-                  data: "Pierre Le Brun, Ticket Cinéma 2 places, Orange Labs",
+                  data: '["${widget.userId}", "${widget.planet.serviceId}"]',
                   size: 250.0,
                 ),
               ),
@@ -137,7 +146,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                         ));
                   },
                   isExpanded: item.isExpanded,
-                  body: item.body,
+                  body: new Padding(
+                      padding: new EdgeInsets.only(bottom: 20.0),
+                      child: new Column(children: _panelList())),
                 );
               }).toList(),
             ),
@@ -148,54 +159,69 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     );
   }
 
+  List<Widget> _panelList() {
+    List<Widget> panelList = [];
+    for (var i = 0; i < widget.planet.partners.length; i++) {
+      panelList.add(Text(widget.planet.partners[i].toUpperCase(),
+          style: TextStyle(
+              color: Color(0xFF4B4954),
+              fontSize: 16.0,
+              fontFamily: 'Poppins')));
+      if (i != widget.planet.partners.length - 1) {
+        panelList.add(Separator());
+      }
+    }
+    return panelList;
+  }
+
   Container _getToolbar(BuildContext context) {
     return new Container(
-      margin: new EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: new BackButton(color: Colors.white)
-    );
+        margin: new EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: new BackButton(color: Colors.white));
   }
 
   Center _buttonCancel(BuildContext context) {
     return new Center(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 10,
-          ),
-          child: Align(
-            alignment: Alignment.center,
-            child: PhysicalModel(
-              elevation: 8,
-              shadowColor: Colors.black12,
-              color: Color(0xFF43e97b),
-              borderRadius: BorderRadius.circular(25),
-              child: Container(
-                key: _globalKey,
-                height: 48,
-                width: _width,
-                child: RaisedButton(
-                  animationDuration: Duration(milliseconds: 1000),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  padding: EdgeInsets.all(0),
-                  child: setUpButtonChild(),
-                  onPressed: () {
-                    setState(() {
-                      if (_state == 0) {
-                        animateButton();
-                      }
-                    });
-                  },
-                  elevation: 4,
-                  color: Colors.red,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 10,
+        ),
+        child: Align(
+          alignment: Alignment.center,
+          child: PhysicalModel(
+            elevation: 8,
+            shadowColor: Colors.black12,
+            color: Color(0xFF43e97b),
+            borderRadius: BorderRadius.circular(25),
+            child: Container(
+              key: _globalKey,
+              height: 48,
+              width: _width,
+              child: RaisedButton(
+                animationDuration: Duration(milliseconds: 1000),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
                 ),
+                padding: EdgeInsets.all(0),
+                child: setUpButtonChild(),
+                onPressed: () {
+                  setState(() {
+                    if (_state == 0) {
+                      dataFetch.pushUserDataCancel(widget.userId,
+                          widget.planet.serviceId, animateButton, _serviceUsed);
+                    }
+                  });
+                },
+                elevation: 4,
+                color: Colors.red,
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   setUpButtonChild() {
@@ -204,8 +230,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         "Cancel the reservation",
         style: const TextStyle(
           color: Colors.white,
-    fontSize: 30.0,
-    fontFamily: 'Satisfy',
+          fontSize: 30.0,
+          fontFamily: 'Satisfy',
         ),
       );
     } else if (_state == 1) {
@@ -218,7 +244,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ),
       );
     } else {
-      return Icon(Icons.cancel, color: Colors.white);
+      Navigator.maybePop(context);
     }
   }
 
@@ -240,10 +266,20 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       _state = 1;
     });
 
-    Timer(Duration(milliseconds: 3300), () {
+    Timer(Duration(milliseconds: 1500), () {
       setState(() {
         _state = 2;
       });
     });
   }
 }
+
+class NewItem {
+  bool isExpanded;
+  final String header;
+  final Icon iconpic;
+  NewItem(this.isExpanded, this.header, this.iconpic);
+}
+
+double discretevalue = 2.0;
+double hospitaldiscretevalue = 25.0;

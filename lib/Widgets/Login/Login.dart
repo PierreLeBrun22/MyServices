@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myservices/services/fetch_data.dart' as dataFetch;
 
 class Login extends StatefulWidget {
   Login({this.auth, this.onSignedIn});
@@ -106,7 +107,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           userId = await widget.auth.signUp(_emailSignup, _passwordSignup);
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
-          _pushUserData(userId, _emailSignup, _firstName, _name, _company, _statut, _pack);
+          dataFetch.pushUserDataSignupProfile(userId, _emailSignup, _firstName, _name, _company, _statut, _pack);
           print('Signed up user: $userId');
           final form = _formKeySignup.currentState;
           form.reset();
@@ -145,7 +146,9 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
 CollectionReference ref = Firestore.instance.collection('packs');
 QuerySnapshot eventsQuery = await ref.getDocuments();
     eventsQuery.documents.forEach((document) {
-       _packList.add(document['name']);
+       if(document['name'] != 'Open') {
+        _packList.add(document['name']);
+      }
     });
   }
 
@@ -155,15 +158,6 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     eventsQuery.documents.forEach((document) {
        _statutList.add(document['name']);
     });
-  }
-
-   void _pushUserData(userID, email, firstName, name, company, status, pack) {  
-     if(status == 'Executive') {
-       Firestore.instance.collection('user').add({userID: {"mail": email, "firstName": firstName, "name": name, "company": company, "status": status, "pack": pack, "availableServices": 10, "usedServices": 0}});
-     }
-     else {
-       Firestore.instance.collection('user').add({userID: {"mail": email, "firstName": firstName, "name": name, "company": company, "status": status, "pack": pack, "availableServices": 5, "usedServices": 0}});
-     }
   }
 
   @override
@@ -177,7 +171,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     super.initState();
   }
 
-  Widget HomePage() {
+  Widget homePage() {
     return new Scaffold(
       body: Container(
       height: MediaQuery.of(context).size.height,
@@ -294,7 +288,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     ); 
   }
 
-  Widget LoginPage() {
+  Widget loginPage() {
     return new Scaffold(
       body: new Container(
         height: MediaQuery.of(context).size.height,
@@ -490,7 +484,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
     );
   }
 
-  Widget SignupPage() {
+  Widget signupPage() {
     return new Scaffold(
       body: new Container(
         height: MediaQuery.of(context).size.height,
@@ -884,7 +878,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
             );
           },
           validator: (val) {
-            return val != 'Choose one' ? null : 'Please select a company';
+            return  val != null && val != 'Choose one' ? null : 'Please select a company';
           },
         ),
         )
@@ -960,7 +954,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
             );
           },
           validator: (val) {
-            return val != 'Choose one' ? null : 'Please select a status';
+            return val != null && val != 'Choose one' ? null : 'Please select a status';
           },
         ),
         )
@@ -1036,7 +1030,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
             );
           },
           validator: (val) {
-            return val != 'Choose one' ? null : 'Please select a pack';
+            return val != null && val != 'Choose one' ? null : 'Please select a pack';
           },
         ),
         )
@@ -1192,7 +1186,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
             child: PageView(
               controller: _controller,
               physics: new AlwaysScrollableScrollPhysics(),
-              children: <Widget>[LoginPage(), HomePage(), SignupPage()],
+              children: <Widget>[loginPage(), homePage(), signupPage()],
               scrollDirection: Axis.horizontal,
             )),
         _showCircularProgress(),

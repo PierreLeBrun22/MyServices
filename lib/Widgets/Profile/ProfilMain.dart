@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:myservices/services/authentication.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:myservices/services/fetch_data.dart' as dataFetch;
 
-const String SignOut = 'LOGOUT';
+const String signOut = 'LOGOUT';
+const String pack = 'PACK';
 
-const List<String> choices = <String>[SignOut];
+const List<String> choices = <String>[signOut, pack];
 
 class ProfilPage extends StatefulWidget {
   ProfilPage({Key key, this.auth, this.onSignedOut, this.userId})
@@ -20,6 +23,33 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
+  String userPack;
+  final _formKey = new GlobalKey<FormState>();
+  List<String> _packList = <String>['Choose one'];
+  String _pack = 'Choose one';
+
+  void _getPack() async {
+    CollectionReference ref = Firestore.instance.collection('packs');
+    QuerySnapshot eventsQuery = await ref.getDocuments();
+    eventsQuery.documents.forEach((document) {
+      if (document['name'] != 'Open') {
+        _packList.add(document['name']);
+      }
+    });
+  }
+
+  void _getData() async {
+    CollectionReference ref = Firestore.instance.collection('user');
+    QuerySnapshot eventsQuery = await ref.getDocuments();
+    eventsQuery.documents.forEach((document) {
+      if (document.data.containsKey(widget.userId)) {
+        setState(() {
+          userPack = document.data[widget.userId]['pack'];
+        });
+      }
+    });
+  }
+
   _signOut() async {
     try {
       await widget.auth.signOut();
@@ -29,10 +59,134 @@ class _ProfilPageState extends State<ProfilPage> {
     }
   }
 
-  void choiceAction(String choice) {
-    if (choice == SignOut) {
-      _signOut();
+  void _validateAndSave() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      dataFetch.changePack(userPack, _pack, widget.userId);
+      setState(() {
+       userPack = _pack; 
+      });
+      Navigator.of(context).pop();
     }
+  }
+
+  void _changePack() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Change pack",
+              style: TextStyle(
+                  fontFamily: 'Satisfy',
+                  color: Color(0xFF43e97b),
+                  fontSize: 25)),
+          content: Container(
+            height: 50.0, // Change as per your requirement
+            width: 300.0, // Change as per your requirement
+            child: new Form(
+              key: _formKey,
+              child: new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Color(0xFF43e97b),
+                        width: 0.5,
+                        style: BorderStyle.solid),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child: new FormField<String>(
+                        builder: (FormFieldState<String> state) {
+                          return InputDecorator(
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: const Icon(FontAwesomeIcons.suitcase,
+                                  color: Colors.grey),
+                              errorText:
+                                  state.hasError ? state.errorText : null,
+                            ),
+                            isEmpty: _pack == 'Choose one',
+                            child: new DropdownButtonHideUnderline(
+                              child: new DropdownButton<String>(
+                                value: _pack,
+                                isDense: true,
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    _pack = newValue;
+                                    state.didChange(newValue);
+                                  });
+                                },
+                                items: _packList.map((String value) {
+                                  return new DropdownMenuItem<String>(
+                                    value: value,
+                                    child: new Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
+                        },
+                        validator: (val) {
+                          return val != userPack && val != null && val != 'Choose one'
+                              ? null
+                              : 'Please change your pack';
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Dismiss",
+                  style: TextStyle(
+                      fontFamily: 'Poppins', color: Colors.grey, fontSize: 15)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Change",
+                  style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Color(0xFF43e97b),
+                      fontSize: 15)),
+              onPressed: () {
+                _validateAndSave();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void choiceAction(String choice) {
+    if (choice == signOut) {
+      _signOut();
+    } else if (choice == pack) {
+      _changePack();
+    }
+  }
+
+  @override
+  void initState() {
+    _getPack();
+    _getData();
+    super.initState();
   }
 
   @override
