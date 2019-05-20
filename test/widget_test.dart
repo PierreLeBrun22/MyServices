@@ -16,9 +16,7 @@ List<Service> services = [
 ];
 
 void main() {
-  // Define a test. The TestWidgets function will also provide a WidgetTester
-  // for us to work with. The WidgetTester will allow us to build and interact
-  // with Widgets in the test environment.
+  //Test functionnal
   testWidgets('Succes if the services are displayed', (WidgetTester tester) async {
     provideMockedNetworkImages(() async {
       
